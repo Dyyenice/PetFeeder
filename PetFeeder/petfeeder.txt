@@ -1,0 +1,91 @@
+String agAdi = "DYaren";                   //Ağımızın adını buraya yazıyoruz.    
+String agSifresi = "Dyaren2096";             //Ağımızın şifresini buraya yazıyoruz.
+int IN1 = 3, IN2 = 4, IN3 = 5, IN4 = 6; //Step motor pinlerini tanımlıyoruz.
+int sure = 3;
+#define BLYNK_TEMPLATE_ID           "TMPLyiKUF7lC"
+#define BLYNK_DEVICE_NAME           "Quickstart Template"
+#define BLYNK_AUTH_TOKEN            "zS3M2bNwZU9oxIpfLWxfJW0CsdCN22Kb"
+#include "NewPing.h"
+#define TRIGGER_PIN 9
+#define ECHO_PIN 10
+#define MAX_DISTANCE 400
+float duration, distance;
+
+
+char auth[] = BLYNK_AUTH_TOKEN;
+
+// Your WiFi credentials.
+// Set password to "" for open networks.
+char ssid[] = "Ardad";
+char pass[] = "Arda2000";
+NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
+
+BLYNK_WRITE(V1)
+{
+  int pinValue = param.asInt(); // assigning incoming value from pin V1 to a variable
+  if (distance <= 800 || distance >= 2){
+        Serial.print(distance);
+        Serial.println(" cm");
+        delay(500);
+      if(pinValue == 1){                    //İleri komutu geldiğinde içerisindeki komutlar çalışır.
+        
+        stepIleri(512);
+      }
+      else if(pinValue == 01){                //Geri komutu geldiğinde içerisindeki komutlar çalışır.
+        stepGeri(512);
+      }
+      else{
+        Serial.println("Out of range");
+        }
+ 
+  Serial.print("V1 Slider value is: ");
+  Serial.println(pinValue);
+  }
+}
+void setup(){ 
+  pinMode(IN1, OUTPUT);                                   //Motor pinleri OUTPUT olarak ayarlanır.
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+  Serial.begin(115200);                                         //Seri haberleşmeyi başlatıyoruz.
+  Blynk.begin(auth, ssid, pass);
+  // You can also specify server:
+  //Blynk.begin(auth, ssid, pass, "blynk.cloud", 80);
+  //Blynk.begin(auth, ssid, pass, IPAddress(192,168,1,100), 8080);
+}
+void loop(){
+  Blynk.run();
+}
+
+void stepIleri(int adimSayisi){                               //Step motora ileri hareketi yaptırır.
+ for (int i = 0; i < adimSayisi; i++) {
+    digitalWrite(IN4, HIGH);
+    delay(sure);
+    digitalWrite(IN4, LOW);
+    digitalWrite(IN3, HIGH);
+    delay(sure);
+    digitalWrite(IN3, LOW);
+    digitalWrite(IN2, HIGH);
+    delay(sure);
+    digitalWrite(IN2, LOW);
+    digitalWrite(IN1, HIGH);
+    delay(sure);
+    digitalWrite(IN1, LOW);
+  }
+}
+void stepGeri(int adimSayisi){                                //Step motora ileri hareketi yaptırır.
+   for (int i = 0; i < adimSayisi; i++) {
+    digitalWrite(IN1, HIGH);
+    delay(sure);
+    digitalWrite(IN1, LOW);
+    digitalWrite(IN2, HIGH);
+    delay(sure);
+    digitalWrite(IN2, LOW);
+    digitalWrite(IN3, HIGH);
+    delay(sure);
+    digitalWrite(IN3, LOW);
+    digitalWrite(IN4, HIGH);
+    delay(sure);
+    digitalWrite(IN4, LOW);
+  }
+}
